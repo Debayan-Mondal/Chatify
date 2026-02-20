@@ -24,13 +24,13 @@ export const getMessagesByUserId = async (req, res) => {
             ]
         });
         if(messages) {
-            res.status(200).json(messages);
+            return res.status(200).json(messages);
         } else {
-            res.status(200).json({messages: "Looks quite Empty"});
+            return res.status(200).json({messages: "Looks quite Empty"});
         }
     } catch (err) {
         console.log("Error in the getMessagesByUserId Controller");
-        res.status(500).json({message: "Internal Server Error"});
+        return res.status(500).json({message: "Internal Server Error"});
     }
 }
 
@@ -39,6 +39,17 @@ export const sendMessage = async (req, res) => {
         const {text, image} = req.body;
         const myId = req.user._id;
         const {id} = req.params;
+        if(!text && !image) {
+            return res.status(400).json({message: "Text or Image is required"});
+        }
+        if(myId.equals(id)) {
+            return res.status(400).json({message: "Cannot send to yourself"});
+        }
+        const isReceiverExists = await User.exists({_id: id});
+        if(!isReceiverExists) {
+            return res.status(400).json({message: "Receiver doesnt Exists"});
+        }
+
         let imageURL
         if(image) {
             const uploadResponse = await cloudinary.uploader.upload(image);
@@ -52,11 +63,11 @@ export const sendMessage = async (req, res) => {
         });
         if(newMessage) {
             await newMessage.save();
-            res.status(201).json(newMessage);
+            return res.status(201).json(newMessage);
         }
     } catch(err) {
         console.log("Error in sendMessage controller");
-        res.status(500).json({message:"Internal Server Error"});
+        return res.status(500).json({message:"Internal Server Error"});
     }
 }
 
@@ -78,6 +89,6 @@ export const getChatUser = async (req, res) => {
         res.status(200).json(myContacts);
     } catch(err) {
         console.log("Error in getChatUser controller");
-        res.status(500).json({message: "Internal Serval Error"});
+        return res.status(500).json({message: "Internal Serval Error"});
     }
 }
