@@ -1,35 +1,26 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React from 'react'
+import { Route, Routes } from 'react-router'
+import Chat from "./pages/Chat.jsx"
+import Login from "./pages/Login.jsx"
+import SignUp from "./pages/SignUp.jsx"
+import { useAuthStore } from './store/useAuthStore.js'
 
-function App() {
-  const [count, setCount] = useState(0)
-
+export default function App() {
+  const {name, isLoading, load} = useAuthStore();
+  console.log(name);
+  console.log(isLoading);
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <div className='min-h-screen bg-slate-900 relative flex justify-center items-center
+    p-4 overflow-hidden'>
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#1b2e1b2e_1px,transparent_1px),linear-gradient(to_bottom,#1b2e1b2e_1px,transparent_1px)] bg-[size:20px_20px]" />
+      <div className="absolute top-0 -left-10 size-[500px] bg-green-900 opacity-30 blur-[120px]" />
+      <div className="absolute bottom-10 right-10 size-[400px] bg-emerald-600 opacity-10 blur-[100px]" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-full bg-stone-900/20" />
+      <Routes>
+        <Route path="/" element={<Chat/>}/>
+        <Route path="/login" element={<Login/>}/>
+        <Route path="/signup" element={<SignUp/>}/>
+      </Routes>
+    </div>
   )
 }
-
-export default App
