@@ -60,7 +60,7 @@ export default function SignUp() {
                 {isSigning ? (<PageLoader/>) : ("Create Account")}
               </form>
               <Link to="/login">
-                <button className='btn btn-outline btn-info'>Already have an Acoount? Log in!</button>
+                <button className='btn btn-outline btn-info'>Already have an Acount? Log in!</button>
               </Link>
             </div>
           </div>
