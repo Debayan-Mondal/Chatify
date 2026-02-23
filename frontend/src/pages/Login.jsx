@@ -46,7 +46,6 @@ export default function Login() {
                   </div>
                 </div>
                 <button type="submit" disabled={isLogging} className='btn btn-primary w-full'>Submit</button>
-                {isLogging ? (<PageLoader/>) : ("Create Account")}
               </form>
               <Link to="/signup">
                 <button className='btn btn-outline btn-info'>Don't have an Acount? Log in!</button>

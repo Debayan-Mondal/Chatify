@@ -57,7 +57,6 @@ export default function SignUp() {
                   </div>
                 </div>
                 <button type="submit" disabled={isSigning} className='btn btn-primary w-full'>Submit</button>
-                {isSigning ? (<PageLoader/>) : ("Create Account")}
               </form>
               <Link to="/login">
                 <button className='btn btn-outline btn-info'>Already have an Acount? Log in!</button>
