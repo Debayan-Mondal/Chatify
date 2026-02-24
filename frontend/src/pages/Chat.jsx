@@ -10,7 +10,7 @@ import NoConversationPlaceHolder from "../components/NoConversationPlaceHolder.j
 export default function Chat() {
   const {activeTab, selectedUser} = useChatStore();
   return (
-    <div className='flex relative w-full max-w-6xl  h-[650px]'>
+    <div className='flex overflow-hidden rounded-lg relative w-full max-w-6xl  h-[650px]'>
       {/*Left Side*/}
       <div className='w-80 h-full bg-base-300 backdrop-blur-sm flex flex-col'>
         <ProfileHeader/>
