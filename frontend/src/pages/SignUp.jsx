@@ -29,7 +29,7 @@ export default function SignUp() {
                   <label className='auth-input-label'>Full Name</label>
                   <div className='relative input input-primary gap-1 flex items-center'>
                     <User/>
-                    <input type="text" value={formData.fullName} 
+                    <input type="text" value={formData.fullName} className='size-full'
                       onChange={(event) => setFormData({...formData, fullName: event.target.value})}
                       placeholder='John Doe'
                     />
@@ -39,7 +39,7 @@ export default function SignUp() {
                   <label className='auth-input-label'>Email</label>
                   <div className='relative input input-primary gap-1 flex items-center'>
                     <Mail/>
-                    <input type="text" value={formData.email}
+                    <input type="text" value={formData.email} className='size-full'
                       onChange={(event) => setFormData({...formData, email: event.target.value})}
                       placeholder='johndoe@gmail.com'
                     />
@@ -49,7 +49,7 @@ export default function SignUp() {
                   <label className='auth-input-label'>Password</label>
                   <div className='relative input input-primary gap-1 flex items-center'>
                     <RectangleEllipsis />
-                    <input type="password"
+                    <input type="password" className='size-full'
                       value={formData.password}
                       onChange={(event) => setFormData({...formData, password: event.target.value})} 
                       placeholder='*****'

@@ -28,7 +28,7 @@ export default function Login() {
                   <label className='auth-input-label'>Email</label>
                   <div className='relative input input-primary gap-1 flex items-center'>
                     <Mail/>
-                    <input type="text" value={formData.email}
+                    <input type="text" className='size-full' value={formData.email}
                       onChange={(event) => setFormData({...formData, email: event.target.value})}
                       placeholder='johndoe@gmail.com'
                     />
@@ -38,7 +38,7 @@ export default function Login() {
                   <label className='auth-input-label'>Password</label>
                   <div className='relative input input-primary gap-1 flex items-center'>
                     <RectangleEllipsis />
-                    <input type="password"
+                    <input type="password" className='size-full'
                       value={formData.password}
                       onChange={(event) => setFormData({...formData, password: event.target.value})} 
                       placeholder='*****'
