@@ -66,7 +66,7 @@ export const sendMessage = async (req, res) => {
             return res.status(201).json(newMessage);
         }
     } catch(err) {
-        console.log("Error in sendMessage controller");
+        console.log(err);
         return res.status(500).json({message:"Internal Server Error"});
     }
 }
@@ -79,7 +79,7 @@ export const getChatUser = async (req, res) => {
             $or: [{senderId: myId}, {receiverId: myId}],
         });
         const myContactsIds = [ ...new Set(messages.map((item)=> {
-            if(item.senderId.toString === myId.toString) {
+            if(item.senderId.toString() === myId.toString()) {
                 return item.receiverId;
             } else {
                 return item.senderId;
