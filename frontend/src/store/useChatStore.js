@@ -80,6 +80,19 @@ export const useChatStore = create((set, get)=>({
             toast.error(error.response?.data?.message || "Something went Wrong");
             set({messages: messages});
         }
+    },
+    subscribeToMessage: () => {
+        const { selectedUser} = get();
+        if(!selectedUser) return;
+        const socket = useAuthStore.getState().socket;
+        socket.on("newMessage", (newMessage) => {
+            const currentMessages = get().messages;
+            set({ messages: [...currentMessages, newMessage] });
+            console.log(currentMessages);
+        })
+    },
+    unsubscribeFromMessage: () => {
+        const socket = useAuthStore.getState().socket;
+        socket.off("newMessage");
     }
-
 }));
