@@ -4,5 +4,4 @@ import react from '@vitejs/plugin-react'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
-  base: process.env.VIT_BASE_PATH || "/Chatify"
 })

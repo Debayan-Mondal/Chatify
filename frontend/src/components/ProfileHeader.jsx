@@ -26,12 +26,12 @@ export default function ProfileHeader() {
       <div className='flex items-center justify-between'>
         <div className='flex items-center gap-3'>
          <div className='avatar online'>
-          <button className='size-14 rounded-full overflow-hidden relative group'
+          <button className='size-14 rounded-full overflow-hidden relative'
             onClick={() => fileInputRef.current.click()}
           ><img src={selectedImg || authUser.profilePic || "/avatar.png"} alt="User Image"
            className='size-full object-cover'/>
-           <div className='absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100
-           flex items-center justify-center transitional-opacity'>
+           <div className='absolute inset-0 bg-black/50 opacity-0 hover:opacity-100
+           flex items-center justify-center transition-opacity'>
             <span className='text-white text-xs'>Change</span>
            </div>
            </button>

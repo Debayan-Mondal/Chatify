@@ -16,12 +16,12 @@ export default function Login() {
     <div className='z-10 w-[850px] flex justify-center items-center p-1 bg-base-100 rounded-lg'>
       <div className='relative w-full  md:h-auto h-[auto]'>
         <div className='w-full flex  flex-col md:flex-row'>
-          <div className='md:w-1/2 p-8 flex items-center justify-center md:border-r border-slate-600/30'>
+          <div className='md:w-1/2 p-8 flex  items-center justify-center md:border-r border-slate-600/30'>
             <div className='w-full max-w-md'>
               <div className='text-center mb-2'>
-                <MessageCircleCode className='h-12 w-12 mx-auto text-slate-400 mb-4'/>
-                <h2 className='text-2xl font-bold text-slate-200 mb-2'>Welcome Back!</h2>
-                <p className='text-slate-400'>Log into account</p>
+                <MessageCircleCode className='h-12 w-12 mx-auto text-base-content mb-4'/>
+                <h2 className='text-2xl font-bold text-base-content mb-2'>Welcome Back!</h2>
+                <p className='text-neutral-content'>Log into account</p>
               </div>
               <form onSubmit={handleSubmit} className='space-y-6 mb-3'>
                 <div>
@@ -54,9 +54,9 @@ export default function Login() {
           </div>
 
           <div className='hidden md:w-1/2 md:flex flex-col items-center justify-center p-6'>
-            <img src="/Signup.png" alt="" className='h-full w-full object-contain' />
+            <img src="/Login.png" alt="" className='h-full w-full object-contain' />
             <div className='mt-6 text-center'>
-              <h3 className='text-xl font-medium text-cyan-200'>Connect anytime, anywhere</h3>
+              <h3 className='text-xl font-medium text-base-content'>Connect anytime, anywhere</h3>
               <div className='mt-4 flex justify-center gap-4'>
                 <span className='auth badge h-10 w-20 bg-info text-black'>Free</span>
                 <span className='auth badge h-10 w-20 p-1 bg-accent text-black'>Easy Setup</span>
