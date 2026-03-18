@@ -33,11 +33,17 @@ A feature-rich, full-stack real-time communication platform built with the **MER
 * Resend API Key
 ### 3. Create .env file with:
 ````bash
-PORT=5000
-MONGO_URI=your_mongodb_connection_string
-JWT_SECRET=your_jwt_secret_key
-RESEND_API_KEY=your_resend_api_key
-CLIENT_URL=http://localhost:3000
+PORT = 3000
+NODE_ENV = developement
+MONGO_URI = your_mongodb_connection_string
+JWT_SECRET=your_secrete_key
+RESEND_API_KEY = your_resend_api_key
+EMAIL_FROM = "onboarding@resend.dev"
+EMAIL_FROM_NAME = "Chatify"
+CLIENT_URL = http://localhost:5173
+CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
+CLOUDINARY_API_KEY=your_cloudinary_api_key
+CLOUDINARY_API_SECRET=your_cloudinary_secret_key
 ````
 
 ### 3. Steps:
