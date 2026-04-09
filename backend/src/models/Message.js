@@ -20,6 +20,14 @@ const messageSchema = new mongoose.Schema(
     image: {
       type: String,
     },
+    iv: {
+      type: String
+    },
+    isEncypted: {
+      type: Boolean,
+      default: false,
+      required: true
+    }
   },
   { timestamps: true }
 );

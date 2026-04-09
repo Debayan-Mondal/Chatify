@@ -37,7 +37,7 @@ export const getMessagesByUserId = async (req, res) => {
 
 export const sendMessage = async (req, res) => {
     try {
-        const {text, image} = req.body;
+        const {text, image, iv} = req.body;
         const myId = req.user._id;
         const {id} = req.params;
         if(!text && !image) {
@@ -53,14 +53,19 @@ export const sendMessage = async (req, res) => {
 
         let imageURL
         if(image) {
-            const uploadResponse = await cloudinary.uploader.upload(image);
+            const uploadStr = `data:image/png;base64,${image}`;
+            const uploadResponse = await cloudinary.uploader.upload(uploadStr, {
+                resource_type: "raw"
+            });
             imageURL = uploadResponse.secure_url;
         }
         const newMessage = new Message({
             senderId: myId,
             receiverId: id,
             text: text,
-            image: imageURL
+            image: imageURL,
+            iv: iv,
+            isEncypted: true
         });
         
         await newMessage.save();
@@ -94,5 +99,18 @@ export const getChatUser = async (req, res) => {
     } catch(err) {
         console.log("Error in getChatUser controller");
         return res.status(500).json({message: "Internal Serval Error"});
+    }
+}
+
+export const getPublicKey = async (req, res) => {
+    const {id} = req.params;
+    try {
+        const publicKey = await User.findOne({_id: id}).select("publicKey -_id");
+        if(publicKey) {
+            res.status(200).json(publicKey);
+        }
+    } catch(err) {
+        console.log("Error in getPublicKey");
+        res.status(400).json({message: "Internal Error"});
     }
 }
