@@ -7,14 +7,12 @@ export default function MessageInput() {
     const [text, setText] = useState("");
     const [imagePreview, setImagePreview] = useState(null);
     const fileInputRef = useRef();
-    const {sendMessage} = useChatStore();
-    const handleSendMessage = (e) => {
+    const {sendMessage, encryptMesages} = useChatStore();
+    const handleSendMessage = async (e) => {
       e.preventDefault();
       if(!text.trim() && !imagePreview) return
-      sendMessage({
-        text: text.trim(),
-        image: imagePreview
-      })
+      const encryptedMessage = await encryptMesages(text.trim(), imagePreview);
+      sendMessage({text: text.trim(), image: imagePreview},encryptedMessage);
       setText("");
       setImagePreview("");
       if(fileInputRef.current) fileInputRef.current.value = "";

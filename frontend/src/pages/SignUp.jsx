@@ -4,12 +4,26 @@ import { useAuthStore } from '../store/useAuthStore';
 import PageLoader from "../components/PageLoader.jsx";
 import { Link } from "react-router";
 
+
 export default function SignUp() {
-  const [formData, setFormData] = useState({fullName:"", password:"", email:""});
+  const [formData, setFormData] = useState({fullName:"", password:"", email:"", publicKey: ""});
   const {isSigning, signup} = useAuthStore();
-  const handleSubmit = (event) =>{
+  const handleSubmit = async (event) =>{
     event.preventDefault();
-    signup(formData);
+    const keyPair = await window.crypto.subtle.generateKey (
+      {
+        name: 'ECDH',
+        namedCurve: 'P-256'
+      },
+      true,
+      ['deriveBits', 'deriveKey']
+    );
+    const publicKeyJwk = await window.crypto.subtle.exportKey("jwk", keyPair.publicKey);
+    const privateKeyJwk = await window.crypto.subtle.exportKey("jwk", keyPair.privateKey);
+    setFormData({...formData, publicKey: publicKeyJwk});
+    const finalFormData = {...formData, publicKey: publicKeyJwk};
+    localStorage.setItem('privateKey',JSON.stringify(privateKeyJwk));
+    await signup(finalFormData);
   }
 
 

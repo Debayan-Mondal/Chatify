@@ -2,7 +2,24 @@
 @tailwind components;
 @tailwind utilities;
 
+html {
+  overflow: hidden;
+  height: 100%;
+  width: 100%;
+}
 
+body {
+  overflow: hidden;
+  height: 100%;
+  width: 100%;
+}
+.drawer-overlay {
+  width: 100vw;
+}
+html {
+  scrollbar-gutter: auto;
+  overflow-y: hidden;
+}
 
 .auth-input-icon {
   @apply absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 size-5;
