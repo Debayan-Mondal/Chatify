@@ -10,14 +10,10 @@ import { useState, useEffect } from 'react';
 
 export default function Chat() {
   const { activeTab, selectedUser, getCurrentSharedKey } = useChatStore();
-  useEffect(() => {
-    if(selectedUser) {
-      getCurrentSharedKey();
-    }
-  },[selectedUser])
+  
 
   return (
-    <div className='h-[100vh] w-full overflow-hidden bg-base-100'>
+    <div className='h-[100svh] w-full overflow-hidden bg-base-100'>
       <div className="drawer lg:drawer-open h-full overflow-hidden">
         <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
         <div className="drawer-content flex flex-col h-full overflow-hidden">
