@@ -18,7 +18,7 @@ export const useChatStore = create((set, get)=>({
         set({activeTab: tab});
     },
     setSelectedUser: (user) => {
-        set({selectedUser: user});
+        set({selectedUser: user, currentSharedKey: null, messages: []});
     },
     getCurrentSharedKey: async () => {
         set({isMessagesLoading: true});
@@ -111,6 +111,10 @@ export const useChatStore = create((set, get)=>({
                 let decryptedImage = msg.image;
                 try {
                     const ivBuffer = base64ToUint8Array(msg.iv);
+                    if (!currentSharedKey) {
+                        console.error("Decryption aborted: No shared key available.");
+                        return encryptedMessages;
+                    }
                     if(msg.text) {
                         const textBuffer = base64ToUint8Array(msg.text);
                         const decryptedBuffer = await window.crypto.subtle.decrypt(
@@ -148,9 +152,11 @@ export const useChatStore = create((set, get)=>({
         }
     },
     getMessages: async(userId) => {
+        const {getCurrentSharedKey} = get();
         set({isMessagesLoading: true});
         const {decryptMessage} = get();
         try {
+            await getCurrentSharedKey();
             const res = await axiosInstance.get(`/messages/${userId}`);
             const decryptedMessages = await decryptMessage(res.data);
             set({messages: decryptedMessages});

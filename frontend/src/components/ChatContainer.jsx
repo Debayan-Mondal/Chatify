@@ -7,7 +7,7 @@ import MessageInput from './MessageInput.jsx';
 import MessageLoadingSkeleton from './MessageLoadingSkeleton.jsx';
 
 export default function ChatContainer() {
-  const {selectedUser, getMessages, messages, isMessagesLoading, subscribeToMessage, unsubscribeFromMessage} = useChatStore();
+  const {selectedUser, getMessages, messages, isMessagesLoading, subscribeToMessage, unsubscribeFromMessage, getCurrentSharedKey } = useChatStore();
   const {authUser} = useAuthStore();
   const [selectedImgUser, setSelectedImgUser] = useState(null);
   const [selectedImg, setSelectedImg] = useState(null);
@@ -27,7 +27,7 @@ export default function ChatContainer() {
   
 
   return (
-    <>
+    <div className='flex flex-col h-full overflow-hidden'>
       <ChatHeader />
       <dialog id="my_modal" className="modal">
           <div className="modal-box max-h-none flex flex-col items-center justify-center max-w-none h-screen w-screen">
@@ -44,7 +44,7 @@ export default function ChatContainer() {
             <p className="py-4"><img src={selectedImg} alt="Shared" className='rounded-lg  aspect-auto lg:w-[50vw] md:w-[60vw] sm:w-full object-cover' /></p>
           </div>
         </dialog>
-      <div className='flex-1 px-6 overflow-y-auto py-8'>
+      <div className='flex-1 min-h-0 px-6 overflow-y-auto py-8'>
         {
           messages.length && !isMessagesLoading > 0 ? (
             <div className='w-full mx-auto space-y-6 '>
@@ -86,6 +86,6 @@ export default function ChatContainer() {
         }
       </div>
       <MessageInput/>
-    </>
+    </div>
   )
 }

@@ -10,9 +10,9 @@ import { useState, useEffect } from 'react';
 
 export default function Chat() {
   const { activeTab, selectedUser, getCurrentSharedKey } = useChatStore();
-  useEffect(async() => {
+  useEffect(() => {
     if(selectedUser) {
-      await getCurrentSharedKey();
+      getCurrentSharedKey();
     }
   },[selectedUser])
 
