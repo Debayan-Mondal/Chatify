@@ -46,7 +46,7 @@ export default function ChatContainer() {
         </dialog>
       <div className='flex-1 min-h-0 px-6 overflow-y-auto py-8'>
         {
-          messages.length && !isMessagesLoading > 0 ? (
+          !isMessagesLoading && messages.length > 0 ? (
             <div className='w-full mx-auto space-y-6 '>
               {messages.map(msg => (
                 <div key={msg._id}

@@ -244,7 +244,6 @@ export const useChatStore = create((set, get)=>({
         const {selectedUser, decryptMessage} = get();
         if(!selectedUser) return;
         const socket = useAuthStore.getState().socket;
-        const {authUser} = useAuthStore.getState();
         socket.on("newMessage",async (newMessage) => {
             if(newMessage.senderId === selectedUser._id) {
                 const decryptedMessages = await decryptMessage([newMessage]);
