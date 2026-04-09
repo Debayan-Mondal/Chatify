@@ -12,7 +12,7 @@ export default function Chat() {
   const { activeTab, selectedUser, getCurrentSharedKey } = useChatStore();
   useEffect(() => {
     if(selectedUser) {
-      getCurrentSharedKey();
+      await getCurrentSharedKey();
     }
   },[selectedUser])
 

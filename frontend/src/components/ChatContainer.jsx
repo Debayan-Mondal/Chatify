@@ -13,6 +13,7 @@ export default function ChatContainer() {
   const [selectedImg, setSelectedImg] = useState(null);
   const messageEndRef = useRef(null);
   useEffect(() => {
+    
     getMessages(selectedUser._id);
     subscribeToMessage();
 
