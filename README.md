@@ -1,0 +1,58 @@
+# Chatify: Real-Time Messaging App
+
+A feature-rich, full-stack real-time communication platform built with the **MERN** stack. **Chatify** enables seamless instant messaging, secure user authentication, and automated user onboarding.
+
+---
+
+## Features
+
+* **Real-Time Messaging:** Instant message delivery and receipt using **Socket.io** for a low-latency experience.
+* **Secure Authentication:** Robust user access control implemented via **JSON Web Tokens (JWT)** and password hashing.
+* **Automated Onboarding:** Integration with the **Resend API** to automatically trigger welcome emails upon successful user registration.
+* **User Status:** Real-time online/offline status indicators.
+* **Persistent Conversations:** Chat history is securely stored in MongoDB and retrieved efficiently.
+
+---
+
+## Tech Stack
+
+* **Frontend:** React.js, Tailwind CSS
+* **Backend:** Node.js, Express.js
+* **Database:** MongoDB (Mongoose ODM)
+* **Real-Time Engine:** Socket.io
+* **Email Service:** Resend API
+* **Security:** JWT, Bcrypt.js
+
+---
+
+## Installation & Setup
+
+### 1. Prerequisites
+* Node.js installed
+* MongoDB Atlas account or local instance
+* Resend API Key
+### 3. Create .env file with:
+````bash
+PORT = 3000
+NODE_ENV = developement
+MONGO_URI = your_mongodb_connection_string
+JWT_SECRET=your_secrete_key
+RESEND_API_KEY = your_resend_api_key
+EMAIL_FROM = "onboarding@resend.dev"
+EMAIL_FROM_NAME = "Chatify"
+CLIENT_URL = http://localhost:5173
+CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
+CLOUDINARY_API_KEY=your_cloudinary_api_key
+CLOUDINARY_API_SECRET=your_cloudinary_secret_key
+````
+
+### 3. Steps:
+```bash
+git clone [https://github.com/your-username/chatify.git](https://github.com/your-username/chatify.git)
+cd chatify
+cd server
+npm install
+npm run dev
+cd client
+npm install
+npm run dev
