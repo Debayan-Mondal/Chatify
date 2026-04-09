@@ -17,7 +17,7 @@ export default function Chat() {
   },[selectedUser])
 
   return (
-    <div className='h-[100dvh] w-full overflow-hidden bg-base-100'>
+    <div className='h-[100%] w-full overflow-hidden bg-base-100'>
       <div className="drawer lg:drawer-open h-full overflow-hidden">
         <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
         <div className="drawer-content flex flex-col h-full overflow-hidden">
