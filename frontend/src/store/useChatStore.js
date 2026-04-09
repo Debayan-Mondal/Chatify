@@ -246,10 +246,11 @@ export const useChatStore = create((set, get)=>({
         const socket = useAuthStore.getState().socket;
         const {authUser} = useAuthStore.getState();
         socket.on("newMessage",async (newMessage) => {
-            const decryptedMessages = await decryptMessage([newMessage]);
-            const decryptedMessage = decryptedMessages[0];
-            const currentMessages = get().messages;
-            set({ messages: [...currentMessages, decryptedMessage]});
+            if(newMessage.senderId === selectedUser._id) {
+                const decryptedMessages = await decryptMessage([newMessage]);
+                const decryptedMessage = decryptedMessages[0];
+                set((state) => ({messages: [...state.messages, decryptedMessage]}));
+            }
         })
     },
     unsubscribeFromMessage: () => {
