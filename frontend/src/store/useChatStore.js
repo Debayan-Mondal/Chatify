@@ -103,6 +103,7 @@ export const useChatStore = create((set, get)=>({
     },
     decryptMessage: async (encryptedMessages) => {
         const {base64ToUint8Array, currentSharedKey} = get();
+        set({isMessagesLoading: true});
         if(!currentSharedKey) return encryptedMessages;
         try {
             const decryptedMessages = await Promise.all(encryptedMessages.map(async(msg) => {
@@ -142,6 +143,8 @@ export const useChatStore = create((set, get)=>({
             return decryptedMessages;
         } catch(err) {
             console.log("Decryption failed",err);
+        } finally {
+            set({isMessagesLoading: false});
         }
     },
     getMessages: async(userId) => {
