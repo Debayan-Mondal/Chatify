@@ -21,7 +21,6 @@ export const useChatStore = create((set, get)=>({
         set({selectedUser: user});
     },
     getCurrentSharedKey: async () => {
-        set({isMessagesLoading: true});
         try {
             const {selectedUser} = get();
             const res = await axiosInstance.get(`/messages/key/${selectedUser._id}`);
@@ -57,9 +56,7 @@ export const useChatStore = create((set, get)=>({
             set({currentSharedKey: sharedKey});
         } catch(err) {
             console.log(err);
-        } finally {
-            set({isMessagesLoading: false});
-        }
+        } 
     },
     getAllUser: async() => {
         set({isUserLoading: true});
