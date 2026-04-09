@@ -18,7 +18,7 @@ export const useChatStore = create((set, get)=>({
         set({activeTab: tab});
     },
     setSelectedUser: (user) => {
-        set({selectedUser: user, currentSharedKey: null, messages: []});
+        set({selectedUser: user});
     },
     getCurrentSharedKey: async () => {
         set({isMessagesLoading: true});
