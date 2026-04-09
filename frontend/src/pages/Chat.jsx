@@ -17,14 +17,14 @@ export default function Chat() {
   },[selectedUser])
 
   return (
-    <div className='h-[100%] w-full overflow-hidden bg-base-100'>
+    <div className='h-[100vh] w-full overflow-hidden bg-base-100'>
       <div className="drawer lg:drawer-open h-full overflow-hidden">
         <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
         <div className="drawer-content flex flex-col h-full overflow-hidden">
           {/* RIGHT SIDE: Chat Container */}
-          <div className='flex-1 flex flex-col h-full w-full bg-base-100 backdrop-blur-sm'>
-            {selectedUser ? <ChatContainer /> : <NoConversationPlaceHolder />}
-          </div>
+          
+          {selectedUser ? <ChatContainer /> : <NoConversationPlaceHolder />}
+          
 
           {!selectedUser && (
             <div className="absolute top-4 left-4 lg:hidden">
