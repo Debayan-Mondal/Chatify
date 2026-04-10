@@ -13,6 +13,9 @@ A feature-rich, full-stack real-time communication platform built with the **MER
 * **User Status:** Real-time online/offline status indicators.
 * **Persistent Conversations:** Chat history is securely stored in MongoDB and retrieved efficiently.
 
+## Live Link:
+https://chatify-qv8a.onrender.com/
+
 ---
 
 ## Tech Stack
