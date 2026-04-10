@@ -53,7 +53,7 @@ CLOUDINARY_API_SECRET=your_cloudinary_secret_key
 
 ### 3. Steps:
 ```bash
-git clone [https://github.com/your-username/chatify.git](https://github.com/your-username/chatify.git)
+git clone https://github.com/Debayan-Mondal/Chatify
 cd chatify
 cd server
 npm install
