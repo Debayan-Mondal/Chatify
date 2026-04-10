@@ -7,7 +7,7 @@ A feature-rich, full-stack real-time communication platform built with the **MER
 ## Features
 
 * **Real-Time Messaging:** Instant message delivery and receipt using **Socket.io** for a low-latency experience.
-* **End-to-End Encryption:** Implemented End-to-End Encryption using Elliptical Curve Diffie-Hellman secure key aggrement protocol
+* **End-to-End Encryption:** Implemented End-to-End Encryption using Elliptical Curve Diffie-Hellman secure key aggrement protocol. Both Text and Images are encrypted using AES-GCM algorithm
 * **Secure Authentication:** Robust user access control implemented via **JSON Web Tokens (JWT)** and password hashing.
 * **Automated Onboarding:** Integration with the **Resend API** to automatically trigger welcome emails upon successful user registration.
 * **User Status:** Real-time online/offline status indicators.
