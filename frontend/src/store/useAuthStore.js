@@ -2,6 +2,7 @@ import {create} from "zustand";
 import { axiosInstance } from "../lib/axios.js";
 import toast from "react-hot-toast";
 import {io} from "socket.io-client"
+import { useChatStore } from "./useChatStore.js";
 
 const BASE_URL = import.meta.env.MODE === "development" ? "http://localhost:3000" : "/";
 
@@ -12,6 +13,7 @@ export const useAuthStore = create((set, get) => ({
     isLogging:false,
     socket: null,
     onlineUser: [],
+    currentPrivateKey: null,
 
     checkAuth: async() => {
         try {
@@ -24,7 +26,27 @@ export const useAuthStore = create((set, get) => ({
             set({isChecking: false});
         }
     },
+    recoverPrivateKey: async(password) => {
+        const {authUser} = get();
+        const {salt, iv, wrappedKey} = authUser.vault;
+        const {deriveKey, base64ToUint8Array} = useChatStore.getState();
+        const saltBuffer = base64ToUint8Array(salt);
+        const ivBuffer = base64ToUint8Array(iv);
+        const wrappedKeyBuffer = base64ToUint8Array(wrappedKey);
 
+        const wrappingKey = await deriveKey(password, saltBuffer);
+        const privateKey = await window.crypto.subtle.unwrapKey(
+            "jwk",
+            wrappedKeyBuffer,
+            wrappingKey,
+            {name: "AES-GCM", iv: ivBuffer},
+            {name: "ECDH", namedCurve: "P-256"},
+            true,
+            ["deriveKey", "deriveBits"]
+        );
+        const jwk = await window.crypto.subtle.exportKey("jwk", privateKey);
+        localStorage.setItem(`${authUser.fullName}_privateKey`, JSON.stringify(jwk));
+    },
     signup: async(data) => {
         try {
             set({isSigning: true});
@@ -39,21 +61,27 @@ export const useAuthStore = create((set, get) => ({
         }
     },
     login: async(data) => {
+        const {recoverPrivateKey} = get();
+        
         try {
             set({isLogging: true});
             const res = await axiosInstance.post("/auth/login", data);
-            set({authUser: res.data})
+            set({authUser: res.data});
+            await recoverPrivateKey(data.password);
             toast.success("Logged in successfully!")
             get().connectSocket();
         } catch(error) {
+            console.log(error);
             toast.error(error.response.data.message);
         } finally {
             set({isLogging: false});
         }
     },
     logout: async() => {
+        const {authUser} = get();
         try {
             await axiosInstance.post("/auth/logout");
+            localStorage.removeItem(`${authUser.fullName}_privateKey`);
             toast.success("Logged out successfully!");
             set({authUser: null})
             get().disconnectSocket();

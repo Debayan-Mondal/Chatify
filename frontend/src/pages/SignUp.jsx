@@ -3,11 +3,13 @@ import { MessageCircleCode, Mail, User, RectangleEllipsis } from 'lucide-react';
 import { useAuthStore } from '../store/useAuthStore';
 import PageLoader from "../components/PageLoader.jsx";
 import { Link } from "react-router";
+import { useChatStore } from '../store/useChatStore.js';
 
 
 export default function SignUp() {
-  const [formData, setFormData] = useState({fullName:"", password:"", email:"", publicKey: ""});
+  const [formData, setFormData] = useState({fullName:"", password:"", email:"", publicKey: "", vault: null});
   const {isSigning, signup} = useAuthStore();
+  const {wrapPrivateKey} = useChatStore();
   const handleSubmit = async (event) =>{
     event.preventDefault();
     const keyPair = await window.crypto.subtle.generateKey (
@@ -21,8 +23,8 @@ export default function SignUp() {
     const publicKeyJwk = await window.crypto.subtle.exportKey("jwk", keyPair.publicKey);
     const privateKeyJwk = await window.crypto.subtle.exportKey("jwk", keyPair.privateKey);
     setFormData({...formData, publicKey: publicKeyJwk});
-    const finalFormData = {...formData, publicKey: publicKeyJwk};
-    localStorage.setItem('privateKey',JSON.stringify(privateKeyJwk));
+    const vault = await wrapPrivateKey(privateKeyJwk, formData.password);
+    const finalFormData = {...formData, publicKey: publicKeyJwk, vault: vault};
     await signup(finalFormData);
   }
 
