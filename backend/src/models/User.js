@@ -24,6 +24,11 @@ const userSchema = new mongoose.Schema({
         type: Object,
         default: "",
         required: true
+    },
+    vault: {
+        wrappedKey: {type: String},
+        iv: {type: String},
+        salt: {type: String}
     }
 }, {timestamps: true})
 

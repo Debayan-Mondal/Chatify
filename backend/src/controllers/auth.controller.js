@@ -7,7 +7,8 @@ import bcrypt from "bcryptjs"
 
 
 export const signup = async (req, res) => {
-    const {fullName, email, password, publicKey} = req.body;
+    const {fullName, email, password, publicKey, vault} = req.body;
+    console.log(vault);
     try {
         if (!fullName || !email || !password) {
             return res.status(400).json({message:"All Fields are required"})
@@ -31,7 +32,8 @@ export const signup = async (req, res) => {
             fullName,
             email,
             password: hashedPassword,
-            publicKey
+            publicKey,
+            vault,
         })
 
         if (newUser) {
@@ -82,6 +84,8 @@ export const login = async (req, res) => {
                 fullName: user.fullName,
                 email: user.email,
                 profilePic: user.profilePic,
+                publicKey: user.publicKey,
+                vault: user.vault
             });
         } catch(err) {
             console.error("Error in login controller...", err);

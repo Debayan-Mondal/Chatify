@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { axiosInstance } from "../lib/axios.js";
 import toast from "react-hot-toast";
 import { useAuthStore } from "./useAuthStore.js";
+import { use } from "react";
 
 export const useChatStore = create((set, get)=>({
     allUser:[],
@@ -22,10 +23,11 @@ export const useChatStore = create((set, get)=>({
     },
     getCurrentSharedKey: async () => {
         try {
+            const {authUser} = useAuthStore.getState();
             const {selectedUser} = get();
             const res = await axiosInstance.get(`/messages/key/${selectedUser._id}`);
             const publicKey = res.data.publicKey;
-            const privateKey = JSON.parse(localStorage.getItem("privateKey"));
+            const privateKey = JSON.parse(localStorage.getItem(`${authUser.fullName}_privateKey`));
             const importedPrivateKey = await window.crypto.subtle.importKey(
                 'jwk',
                 privateKey,
@@ -55,7 +57,7 @@ export const useChatStore = create((set, get)=>({
             )
             set({currentSharedKey: sharedKey});
         } catch(err) {
-            console.log(err);
+            console.error("Error getting Shared Key",err)
         } 
     },
     getAllUser: async() => {
@@ -133,6 +135,12 @@ export const useChatStore = create((set, get)=>({
                     }
                 } catch(err) {
                     console.log("Decryption failed", err);
+                    return {
+                        ...msg,
+                        text: decryptedText,
+                        image: decryptedImage,
+                        isEncypted: true
+                    }
                 }
                 return {
                     ...msg,
@@ -252,5 +260,65 @@ export const useChatStore = create((set, get)=>({
     unsubscribeFromMessage: () => {
         const socket = useAuthStore.getState().socket;
         socket.off("newMessage");
+    },
+    deriveKey: async(password, salt) => {
+        const enc =  new TextEncoder();
+        try {
+            const keyMaterial = await window.crypto.subtle.importKey(
+            "raw",
+            enc.encode(password),
+            "PBKDF2",
+            false,
+            ["deriveKey"]
+            );
+            const derivedKey = await window.crypto.subtle.deriveKey (
+                {
+                    name: "PBKDF2",
+                    salt: salt,
+                    iterations: 100000,
+                    hash: "SHA-256"
+                },
+                keyMaterial,
+                {name: "AES-GCM", length: 256},
+                true,
+                ["wrapKey", "unwrapKey"]
+            );
+            return derivedKey;
+        } catch(err) {
+            console.log(err);
+        }
+    },
+    wrapPrivateKey: async(privateKeyJwk, password) => {
+        const {deriveKey} = get();
+        const salt = window.crypto.getRandomValues(new Uint8Array(16));
+        const iv = window.crypto.getRandomValues(new Uint8Array(12));
+        const wrappingKey = await deriveKey(password, salt);
+        console.log(privateKeyJwk);
+        try {
+            const livePrivateKey = await window.crypto.subtle.importKey(
+                "jwk",
+                privateKeyJwk, // The object you showed me
+                {
+                    name: "ECDH",
+                    namedCurve: "P-256"
+                },
+                true, // Extractable must be true
+                ["deriveKey", "deriveBits"]
+            );
+            console.log(livePrivateKey);
+            const wrappedBuffer = await window.crypto.subtle.wrapKey (
+                "jwk",
+                livePrivateKey,
+                wrappingKey,
+                {name: "AES-GCM", iv: iv}
+            );
+            return {
+                wrappedKey: btoa(String.fromCharCode(...new Uint8Array(wrappedBuffer))),
+                iv: btoa(String.fromCharCode(...iv)),
+                salt: btoa(String.fromCharCode(...salt))
+            };
+        } catch(err) {
+            console.log(err);
+        }
     }
 }));
