@@ -62,12 +62,13 @@ export const useAuthStore = create((set, get) => ({
     },
     login: async(data) => {
         const {recoverPrivateKey} = get();
-        
+        const {extendNlpWithLocalPlaces} = useChatStore.getState();
         try {
             set({isLogging: true});
             const res = await axiosInstance.post("/auth/login", data);
             set({authUser: res.data});
             await recoverPrivateKey(data.password);
+            extendNlpWithLocalPlaces();
             toast.success("Logged in successfully!")
             get().connectSocket();
         } catch(error) {

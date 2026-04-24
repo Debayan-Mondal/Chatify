@@ -3,6 +3,7 @@ import { axiosInstance } from "../lib/axios.js";
 import toast from "react-hot-toast";
 import { useAuthStore } from "./useAuthStore.js";
 import { use } from "react";
+import nlp from "compromise";
 
 export const useChatStore = create((set, get)=>({
     allUser:[],
@@ -293,7 +294,6 @@ export const useChatStore = create((set, get)=>({
         const salt = window.crypto.getRandomValues(new Uint8Array(16));
         const iv = window.crypto.getRandomValues(new Uint8Array(12));
         const wrappingKey = await deriveKey(password, salt);
-        console.log(privateKeyJwk);
         try {
             const livePrivateKey = await window.crypto.subtle.importKey(
                 "jwk",
@@ -305,7 +305,6 @@ export const useChatStore = create((set, get)=>({
                 true, // Extractable must be true
                 ["deriveKey", "deriveBits"]
             );
-            console.log(livePrivateKey);
             const wrappedBuffer = await window.crypto.subtle.wrapKey (
                 "jwk",
                 livePrivateKey,
@@ -320,5 +319,54 @@ export const useChatStore = create((set, get)=>({
         } catch(err) {
             console.log(err);
         }
+    },
+    extendNlpWithLocalPlaces: async() => {
+        navigator.geolocation.getCurrentPosition(async(position) => {
+            const {latitude, longitude} = position.coords;
+
+            const query = `
+                [out:json];
+                (
+                node["place"~"city|town|suburb|neighbourhood"](around:20000, ${latitude}, ${longitude});
+                );
+                out body;
+            `;
+            const url = "https://overpass-api.de/api/interpreter?data=" + encodeURIComponent(query);
+            
+            const response = await fetch(url);
+            const data = await response.json();
+            console.log(data.elements);
+            let localNames = [];
+            data.elements.forEach(item => {
+                console.log(item);
+                localNames.push(item.tags.name);
+            })
+            nlp.extend((Doc, world) => {
+                const palaceMapping = {};
+                localNames.forEach(name => {
+                    palaceMapping[name.toLowerCase()] = 'Place';
+                });
+                world.addWords(palaceMapping);
+            })
+            console.log("NLP extended with local context:", localNames);
+        })
+    },
+    removeSensitiveData: (message) => {
+        const doc = nlp(message);
+        let person=0, place=0, phNo=0, email=0;
+
+        doc.replace("#Person", () => {
+            return `Person_${person++}`;
+        });
+        doc.replace("#Place", () => {
+            return `Place_${place++}`;
+        });
+        doc.replace("#PhoneNumber", () => {
+            return `PhoneNumber_${phNo++}`;
+        });
+        doc.replace("#Email", () => {
+            return `Email_${email++}`;
+        });
+        console.log(doc.text());
     }
 }));
