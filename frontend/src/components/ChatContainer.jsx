@@ -8,7 +8,7 @@ import MessageLoadingSkeleton from './MessageLoadingSkeleton.jsx';
 import { BrainCircuit } from 'lucide-react';
 
 export default function ChatContainer() {
-  const {selectedUser, getMessages, messages, isMessagesLoading, subscribeToMessage, unsubscribeFromMessage, getCurrentSharedKey, summarizeMessage,isSummaryLoading } = useChatStore();
+  const {selectedUser, getMessages, messages, isMessagesLoading, subscribeToMessage, unsubscribeFromMessage, getCurrentSharedKey, summarizeMessage,isSummaryLoading, extendNlpWithLocalPlaces } = useChatStore();
   const {authUser} = useAuthStore();
   const [selectedImgUser, setSelectedImgUser] = useState(null);
   const [selectedImg, setSelectedImg] = useState(null);
@@ -40,6 +40,9 @@ export default function ChatContainer() {
       messageEndRef.current.scrollIntoView({behaviour: "smooth"});
     }
   }, [messages]);
+  useEffect(() => {
+    extendNlpWithLocalPlaces();
+  },[])
   
   const menuHandler = (event, msg) => {
     event.preventDefault();
