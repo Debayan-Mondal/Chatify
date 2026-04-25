@@ -15,6 +15,8 @@ export const useChatStore = create((set, get)=>({
     isMessagesLoading: false,
     isSoundEnable: localStorage.getItem("isSoundEnabled") === true,
     currentSharedKey: null,
+    summarizedMessages:[],
+    isSummaryLoading: false,
 
     setActiveTab: (tab) => {
         set({activeTab: tab});
@@ -103,7 +105,6 @@ export const useChatStore = create((set, get)=>({
     },
     decryptMessage: async (encryptedMessages) => {
         const {base64ToUint8Array, currentSharedKey} = get();
-        set({isMessagesLoading: true});
         if(!currentSharedKey) return encryptedMessages;
         try {
             const decryptedMessages = await Promise.all(encryptedMessages.map(async(msg) => {
@@ -154,7 +155,7 @@ export const useChatStore = create((set, get)=>({
         } catch(err) {
             console.log("Decryption failed",err);
         } finally {
-            set({isMessagesLoading: false});
+            
         }
     },
     getMessages: async(userId) => {
@@ -338,7 +339,6 @@ export const useChatStore = create((set, get)=>({
             console.log(data.elements);
             let localNames = [];
             data.elements.forEach(item => {
-                console.log(item);
                 localNames.push(item.tags.name);
             })
             nlp.extend((Doc, world) => {
@@ -367,6 +367,26 @@ export const useChatStore = create((set, get)=>({
         doc.replace("#Email", () => {
             return `Email_${email++}`;
         });
-        console.log(doc.text());
+        return doc.text();
+    },
+
+    summarizeMessage: async(message) => {
+        const {removeSensitiveData, summarizedMessages} = get();
+        for(const msg of summarizedMessages) {
+            if(msg._id == message._id)
+                return msg.text;
+        }
+        const censoredMessage = removeSensitiveData(message.text);
+        set({isSummaryLoading: true});
+        try {
+            const response = await axiosInstance.post('/ai-features/summarize', {text: censoredMessage});
+            set({summarizedMessages: [...summarizedMessages, {_id: message._id, text: response.data}]});
+            return response.data;
+        } catch(err) {
+            return err.response.data.message;
+        } finally {
+            set({isSummaryLoading: false});
+        }
+
     }
 }));
