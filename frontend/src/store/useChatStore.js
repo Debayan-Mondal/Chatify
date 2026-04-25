@@ -322,33 +322,35 @@ export const useChatStore = create((set, get)=>({
         }
     },
     extendNlpWithLocalPlaces: async() => {
-        navigator.geolocation.getCurrentPosition(async(position) => {
-            const {latitude, longitude} = position.coords;
+        return new Promise((resolve, reject) => {
+            navigator.geolocation.getCurrentPosition(async(position) => {
+                const {latitude, longitude} = position.coords;
 
-            const query = `
-                [out:json];
-                (
-                node["place"~"city|town|suburb|neighbourhood"](around:20000, ${latitude}, ${longitude});
-                );
-                out body;
-            `;
-            const url = "https://overpass-api.de/api/interpreter?data=" + encodeURIComponent(query);
-            
-            const response = await fetch(url);
-            const data = await response.json();
-            console.log(data.elements);
-            let localNames = [];
-            data.elements.forEach(item => {
-                localNames.push(item.tags.name);
-            })
-            nlp.extend((Doc, world) => {
+                const query = `
+                    [out:json];
+                    (
+                    node["place"~"city|town|suburb|neighbourhood"](around:20000, ${latitude}, ${longitude});
+                    );
+                    out body;
+                `;
+                const url = "https://overpass-api.de/api/interpreter?data=" + encodeURIComponent(query);
+                
+                const response = await fetch(url);
+                const data = await response.json();
+                let localNames = [];
+                data.elements.forEach(item => {
+                    localNames.push(item.tags.name);
+                })
+                
                 const palaceMapping = {};
                 localNames.forEach(name => {
                     palaceMapping[name.toLowerCase()] = 'Place';
                 });
-                world.addWords(palaceMapping);
+                nlp.plugin({
+                    words: palaceMapping,
+                })
+                    
             })
-            console.log("NLP extended with local context:", localNames);
         })
     },
     removeSensitiveData: (message) => {
