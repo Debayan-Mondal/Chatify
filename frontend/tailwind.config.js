@@ -34,5 +34,16 @@ export default {
         },
       }
     ],
+    extend: {
+      keyframes: {
+        menuShow: {
+          '0%': { opacity: '0', transform: 'scale(0.9) translateY(-10px)' },
+          '100%': { opacity: '1', transform: 'scale(1) translateY(0)' },
+        },
+      },
+      animation: {
+        'menu-open': 'menuShow 0.15s ease-out forwards',
+      },
+    },
   },
 }

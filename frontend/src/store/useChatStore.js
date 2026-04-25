@@ -3,6 +3,7 @@ import { axiosInstance } from "../lib/axios.js";
 import toast from "react-hot-toast";
 import { useAuthStore } from "./useAuthStore.js";
 import { use } from "react";
+import nlp from "compromise";
 
 export const useChatStore = create((set, get)=>({
     allUser:[],
@@ -14,6 +15,8 @@ export const useChatStore = create((set, get)=>({
     isMessagesLoading: false,
     isSoundEnable: localStorage.getItem("isSoundEnabled") === true,
     currentSharedKey: null,
+    summarizedMessages:[],
+    isSummaryLoading: false,
 
     setActiveTab: (tab) => {
         set({activeTab: tab});
@@ -102,7 +105,6 @@ export const useChatStore = create((set, get)=>({
     },
     decryptMessage: async (encryptedMessages) => {
         const {base64ToUint8Array, currentSharedKey} = get();
-        set({isMessagesLoading: true});
         if(!currentSharedKey) return encryptedMessages;
         try {
             const decryptedMessages = await Promise.all(encryptedMessages.map(async(msg) => {
@@ -153,7 +155,7 @@ export const useChatStore = create((set, get)=>({
         } catch(err) {
             console.log("Decryption failed",err);
         } finally {
-            set({isMessagesLoading: false});
+            
         }
     },
     getMessages: async(userId) => {
@@ -293,7 +295,6 @@ export const useChatStore = create((set, get)=>({
         const salt = window.crypto.getRandomValues(new Uint8Array(16));
         const iv = window.crypto.getRandomValues(new Uint8Array(12));
         const wrappingKey = await deriveKey(password, salt);
-        console.log(privateKeyJwk);
         try {
             const livePrivateKey = await window.crypto.subtle.importKey(
                 "jwk",
@@ -305,7 +306,6 @@ export const useChatStore = create((set, get)=>({
                 true, // Extractable must be true
                 ["deriveKey", "deriveBits"]
             );
-            console.log(livePrivateKey);
             const wrappedBuffer = await window.crypto.subtle.wrapKey (
                 "jwk",
                 livePrivateKey,
@@ -320,5 +320,75 @@ export const useChatStore = create((set, get)=>({
         } catch(err) {
             console.log(err);
         }
+    },
+    extendNlpWithLocalPlaces: async() => {
+        return new Promise((resolve, reject) => {
+            navigator.geolocation.getCurrentPosition(async(position) => {
+                const {latitude, longitude} = position.coords;
+
+                const query = `
+                    [out:json];
+                    (
+                    node["place"~"city|town|suburb|neighbourhood"](around:20000, ${latitude}, ${longitude});
+                    );
+                    out body;
+                `;
+                const url = "https://overpass-api.de/api/interpreter?data=" + encodeURIComponent(query);
+                
+                const response = await fetch(url);
+                const data = await response.json();
+                let localNames = [];
+                data.elements.forEach(item => {
+                    localNames.push(item.tags.name);
+                })
+                
+                const palaceMapping = {};
+                localNames.forEach(name => {
+                    palaceMapping[name.toLowerCase()] = 'Place';
+                });
+                nlp.plugin({
+                    words: palaceMapping,
+                })
+                    
+            })
+        })
+    },
+    removeSensitiveData: (message) => {
+        const doc = nlp(message);
+        let person=0, place=0, phNo=0, email=0;
+
+        doc.replace("#Person", () => {
+            return `Person_${person++}`;
+        });
+        doc.replace("#Place", () => {
+            return `Place_${place++}`;
+        });
+        doc.replace("#PhoneNumber", () => {
+            return `PhoneNumber_${phNo++}`;
+        });
+        doc.replace("#Email", () => {
+            return `Email_${email++}`;
+        });
+        return doc.text();
+    },
+
+    summarizeMessage: async(message) => {
+        const {removeSensitiveData, summarizedMessages} = get();
+        for(const msg of summarizedMessages) {
+            if(msg._id == message._id)
+                return msg.text;
+        }
+        const censoredMessage = removeSensitiveData(message.text);
+        set({isSummaryLoading: true});
+        try {
+            const response = await axiosInstance.post('/ai-features/summarize', {text: censoredMessage});
+            set({summarizedMessages: [...summarizedMessages, {_id: message._id, text: response.data}]});
+            return response.data;
+        } catch(err) {
+            return err.response.data.message;
+        } finally {
+            set({isSummaryLoading: false});
+        }
+
     }
 }));
