@@ -28,7 +28,7 @@ https://chatify-qv8a.onrender.com/
 * **Email Service:** Resend API
 * **Security:** JWT, Bcrypt.js
 * **Encryption Algorithm:** AES-GCM
-* * **LLM:** GEMINI
+* **LLM:** GEMINI API (gemini-3.1-flash-lite-preview)
 
 ---
 
