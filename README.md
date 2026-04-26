@@ -8,6 +8,7 @@ A feature-rich, full-stack real-time communication platform built with the **MER
 
 * **Real-Time Messaging:** Instant message delivery and receipt using **Socket.io** for a low-latency experience.
 * **End-to-End Encryption:** Implemented End-to-End Encryption using Elliptical Curve Diffie-Hellman secure key aggrement protocol. Both Text and Images are encrypted using AES-GCM algorithm
+* * **AI-Message Summarizer:** Integrated an AI Message Summarizer with Dynamic Context-Aware NLP to remove Sensitive information before sending to backend for a secured Application.
 * **Secure Authentication:** Robust user access control implemented via **JSON Web Tokens (JWT)** and password hashing.
 * **Automated Onboarding:** Integration with the **Resend API** to automatically trigger welcome emails upon successful user registration.
 * **User Status:** Real-time online/offline status indicators.
@@ -27,6 +28,7 @@ https://chatify-qv8a.onrender.com/
 * **Email Service:** Resend API
 * **Security:** JWT, Bcrypt.js
 * **Encryption Algorithm:** AES-GCM
+* * **LLM:** GEMINI
 
 ---
 
